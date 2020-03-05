@@ -1,7 +1,29 @@
 from django.urls import path
-from .views import categoria_list, categoria_detalle
+from .apiviews import ProductoList, ProductoDetalle, CategoriaList, SubCategoriaList, CategoriaDetalle, SubCategoriaAdd, ProductoViewSet, UserCreate, LoginView
+
+from rest_framework.routers import DefaultRouter
+
+from rest_framework.authtoken import views
+
+router = DefaultRouter()
+router.register('v2/productos', ProductoViewSet, basename='productos')
 
 urlpatterns = [
-    path('categorias/', categoria_list, name='categoria_list'),
-    path('categoria/<int:pk>', categoria_detalle, name='categoria_detalle'),
+    path('v1/productos/', ProductoList.as_view(), name='producto_list' ),
+    path('v1/productos/<int:pk>', ProductoDetalle.as_view(), name='producto_detalle' ),
+    path('v1/categorias/', CategoriaList.as_view(), name='categoria_save' ),
+    #path('v1/subcategorias/', SubCategoriaList.as_view(),name='subcategoria_save' ),
+
+    path('v1/categorias/<int:pk>', CategoriaDetalle.as_view(), name='categoria_list' ),
+    path('v1/categorias/<int:pk>/subcategorias/', SubCategoriaList.as_view(), name='categoria_list' ),
+
+    path('v1/categorias/<int:cat_pk>/addsubcategorias/', SubCategoriaAdd.as_view(), name='subcategoria_apiview' ),
+    
+    path('v3/usuarios/', UserCreate.as_view(), name='usuario_crear'),
+
+    path('v4/login/', LoginView.as_view(), name='login'),
+
+    path("v3/login-drf/", views.obtain_auth_token, name="login_drf"),
 ]
+
+urlpatterns += router.urls
